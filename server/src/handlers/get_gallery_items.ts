@@ -1,10 +1,20 @@
 
+import { db } from '../db';
+import { galleryItemsTable } from '../db/schema';
+import { desc } from 'drizzle-orm';
 import { type GalleryItem } from '../schema';
 
-export async function getGalleryItems(): Promise<GalleryItem[]> {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is fetching all gallery items from the database.
-    // Should order by created_at descending (most recent first).
-    // Could be enhanced to support filtering by category.
-    return [];
-}
+export const getGalleryItems = async (): Promise<GalleryItem[]> => {
+  try {
+    const results = await db
+      .select()
+      .from(galleryItemsTable)
+      .orderBy(desc(galleryItemsTable.created_at))
+      .execute();
+
+    return results;
+  } catch (error) {
+    console.error('Failed to fetch gallery items:', error);
+    throw error;
+  }
+};
